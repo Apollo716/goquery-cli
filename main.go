@@ -16,12 +16,12 @@ type Shop struct {
 }
 
 func Scrape() []Shop {
-	// 読み込むページ
 	var Shops []Shop
 	for i := 1; i <= 26; i++ {
 		fmt.Println("")
 		fmt.Printf("page %d start", i)
 		fmt.Println("")
+
 		res, err := http.Get(fmt.Sprintf("https://monobito.com/all_shop/all/1/?p=%d&&show=s", i))
 		if err != nil {
 			log.Fatal(err)
@@ -36,6 +36,8 @@ func Scrape() []Shop {
 		if err != nil {
 			log.Fatal(err)
 		}
+
+		// cf classに該当するelementを取得して、Shop構造体に入れる
 		doc.Find(".cf").Each(func(i int, s *goquery.Selection) {
 			var shop Shop
 			shopName := s.Find(".info").Find("p").Find("a").Text()
@@ -54,10 +56,9 @@ func Scrape() []Shop {
 }
 
 func main() {
-	//contents
 	fmt.Println("start!")
 	c := Scrape()
-	f, err := os.Create("shop3.csv")
+	f, err := os.Create("output.csv")
 	if err != nil {
 		log.Fatal(err)
 	}
